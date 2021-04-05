@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {auth,provider} from  "../firebase";
 import { Button, Card } from 'react-bootstrap'
 import { useDispatch,useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import db from "../firebase";
 import logo from "./1.gif";
 function LandingScreen() {
     let history=useHistory()
@@ -13,18 +14,29 @@ function LandingScreen() {
         if(user){
             history.push("/register")
         }
+        
         auth.getRedirectResult().then(result=>
             {
-                console.log(result)
+                let error=true
                 if(result.user){
-                    dispatch({type:"USER_LOGIN_SUCCESS",payload:result.user})
-                    localStorage.setItem("userLoginInfo",JSON.stringify(result.user))
-
-                    history.push("/register")
-
+                    db.collection("users").onSnapshot(snapshot=>{
+                        snapshot.docs.map((doc)=>{
+                            console.log(doc.id)
+                            if(doc.id===result?.user?.uid){
+                                dispatch({type:"USER_LOGIN_SUCCESS",payload:result.user})
+                                // localStorage.setItem("userLoginInfo",JSON.stringify(result.user))
+                                error = false
+                                history.push("/register")
+                            }
+                        })
+                        if (error) {
+                            alert("Not a user")
+                        }
+                    })
                 }
-            })
-    }, [history])
+            }
+        )       
+    }, [history,auth])
     const signIn = () => {
         auth.signInWithPopup(provider)
         .then((result)=>{
@@ -53,9 +65,13 @@ function LandingScreen() {
                 <p>Hello Friends Welcome to my Youtube Channel</p>
                 <Button onClick={signIn} variant="success" className="mx-auto mb-2">Sign in with Pop Up Google</Button>
                 <Button onClick={signIn1} variant="success" className="mx-auto">Sign in with Redirect Google</Button>
+                {/* {error && error} */}
             </Card>
         </div>
     )
 }
 
 export default LandingScreen
+
+
+// relate ate six 
