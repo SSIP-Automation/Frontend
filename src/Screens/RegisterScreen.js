@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Col, Form, Row, Button } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
+import db, { auth } from '../firebase'
 
 function RegisterScreen() {
     const [username, setusername] = useState("")
@@ -11,9 +12,68 @@ function RegisterScreen() {
     const userLogin = useSelector(state => state.userLogin)
     const {user}=userLogin
     useEffect(() => {
-        
+      if (auth.isSignInWithEmailLink(window.location.href)) {
+        // Additional state parameters can also be passed via URL.
+        // This can be used to continue the user's intended action before triggering
+        // the sign-in operation.
+        // Get the email if available. This should be available if the user completes
+        // the flow on the same device where they started it.
+        var email = window.localStorage.getItem('emailForSignIn');
+        if (!email) {
+          // User opened the link on a different device. To prevent session fixation
+          // attacks, ask the user to provide the associated email again. For example:
+          email = window.prompt('Please provide your email for confirmation');
+        }
+        // The client SDK will parse the code from the link for you.
+        auth.signInWithEmailLink(email, window.location.href)
+          .then((result) => {
+            // Clear email from storage.
+              
+              db.collection("users").doc(result.user.uid).set({
+              displayName:result.user.displayName
+              })
+            console.log(result);
+            window.localStorage.removeItem('emailForSignIn');
+            // You can access the new user via result.user
+            // Additional user info profile not available via:
+            // result.additionalUserInfo.profile == null
+            // You can check if the user is new or existing:
+            // result.additionalUserInfo.isNewUser
+          })
+          .catch((error) => {
+            // Some error occurred, you can inspect the code: error.code
+            // Common errors could be invalid email and invalid or expired OTPs.
+            console.log(error);
+          });
+      }
         
     }, [])
+    const signIn2=()=>{
+      var actionCodeSettings = {
+          // URL you want to redirect back to. The domain (www.example.com) for this
+          // URL must be in the authorized domains list in the Firebase Console.
+          url: 'https://ssip-fad50.web.app/',
+          handleCodeInApp: true,
+          // This must be true.
+          
+          // dynamicLinkDomain: 'https://dynamiclenk.page.link/'
+        };
+        auth.sendSignInLinkToEmail(email, actionCodeSettings)
+          .then((response) => {
+              // The link was successfully sent. Inform the user.
+              // Save the email locally so you don't need to ask the user for it again
+              // if they open the link on the same device.
+              // ...
+              window.localStorage.setItem('emailForSignIn', email);
+              console.log(response,"yes");
+          })
+          .catch((error) => {
+              console.log(error)
+              var errorCode = error.code;
+              var errorMessage = error.message;
+              // ...
+          });
+  }
     const SubmitHandler=(e)=>{
         e.preventDefault()
         if(confirmpassword===password){
@@ -36,7 +96,7 @@ function RegisterScreen() {
               </Form.Group>
               <Form.Group controlId="Email">
                 <Form.Label>Email Address</Form.Label>
-                <Form.Control type="email" placeholder="Enter Email" onChange={(e)=>setemail(e.target.value)}></Form.Control>
+                <Form.Control required type="email" placeholder="Enter Email" onChange={(e)=>setemail(e.target.value)}></Form.Control>
               </Form.Group>
               <Form.Group controlId="Password">
                 <Form.Label>Password</Form.Label>
@@ -59,6 +119,7 @@ function RegisterScreen() {
                     </Form.Control>
               </Form.Group>
               <Button type="submit">Submit</Button>
+              <Button onClick={signIn2} variant="success" className="mx-auto">Sign in with Email link </Button>
             </Form>
           </Col>
         </Row>
