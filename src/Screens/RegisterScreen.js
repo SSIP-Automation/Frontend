@@ -20,7 +20,7 @@ function RegisterScreen() {
     const signIn2=()=>{
       var actionCodeSettings = {
           
-          url: 'http://localhost:8000',
+          url: 'https://ssip-fad50.web.app',
           handleCodeInApp: true,
           
         };

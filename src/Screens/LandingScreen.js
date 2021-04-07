@@ -75,13 +75,13 @@ function LandingScreen() {
         })
       }
     const signIn1=()=>{
+        setloading(true)
         auth.signInWithRedirect(provider)
         .then((result)=>{
             console.log(result)
             dispatch({type:"USER_LOGIN_SUCCESS",payload:result.user})
          })
 
-         setloading(true)
     }
     
    
