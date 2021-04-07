@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import {auth,provider} from  "../firebase";
-import { Button, Card, Spinner } from 'react-bootstrap'
+import { Button, Card, Col, Row, Spinner } from 'react-bootstrap'
 import { useDispatch,useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import db from "../firebase";
 import logo from "./1.gif";
 function LandingScreen() {
@@ -16,37 +16,27 @@ function LandingScreen() {
             history.push("/register")
         }
         if (auth.isSignInWithEmailLink(window.location.href)) {
-            // Additional state parameters can also be passed via URL.
-            // This can be used to continue the user's intended action before triggering
-            // the sign-in operation.
-            // Get the email if available. This should be available if the user completes
-            // the flow on the same device where they started it.
+           
             var email = window.localStorage.getItem('emailForSignIn');
+            setloading(true)
             if (!email) {
-              // User opened the link on a different device. To prevent session fixation
-              // attacks, ask the user to provide the associated email again. For example:
-            //   email = window.prompt('Please provide your email for confirmation');
+              
+              email = window.prompt('Please provide your email for confirmation');
             }
-            // The client SDK will parse the code from the link for you.
             auth.signInWithEmailLink(email, window.location.href)
               .then((result) => {
-                // Clear email from storage.
                 console.log(result);
                 db.collection("users").doc(result.user.uid).set({
                     displayName:result.user.displayName
                     })
                 window.localStorage.removeItem('emailForSignIn');
                 alert("User authenticated please Log in")
-                history.push("/")
-                // You can access the new user via result.user
-                // Additional user info profile not available via:
-                // result.additionalUserInfo.profile == null
-                // You can check if the user is new or existing:
-                // result.additionalUserInfo.isNewUser
+                history.push("/register")
+                setloading(false)
+                
               })
               .catch((error) => {
-                // Some error occurred, you can inspect the code: error.code
-                // Common errors could be invalid email and invalid or expired OTPs.
+                
                 console.log(error);
               });
           }
@@ -55,6 +45,7 @@ function LandingScreen() {
             {
                 let error=true
                 if(result.user){
+                    setloading(true)
                     db.collection("users").onSnapshot(snapshot=>{
                         snapshot.docs.map((doc)=>{
                             console.log(doc.id)
@@ -68,6 +59,7 @@ function LandingScreen() {
                         if (error) {
                             alert("Not a user")
                         }
+                        console.log(auth);
                     })
                 }
             }
@@ -99,12 +91,22 @@ function LandingScreen() {
                 <Card.Img className="mb-4" style={{height:"125px",objectFit:"contain"}} src={logo}/>
                 <h3>Sign in to SSIP Automation</h3>
                 <p>Hello Friends Welcome to my Youtube Channel</p>
-                <Button onClick={signIn} variant="success" className="mx-auto mb-2">Sign in with Pop Up Google</Button>
-                <Button onClick={signIn1} variant="success" className="mx-auto mb-2">Sign in with Redirect Google</Button>
+                <Button onClick={signIn} disabled={loading} variant="success" className="mx-auto mb-2">Sign in with Pop Up Google</Button>
+                <Button onClick={signIn1} disabled={loading} variant="success" className="mx-auto mb-2">Sign in with Redirect Google</Button>
                 {/* {error && error} */}
-                {loading && <Spinner animation="border" role="status">
+                {loading && <Spinner className="mx-auto text-primary"  animation="border" role="status">
                 <span className="sr-only">Loading...</span>
                 </Spinner>}
+                <Row>
+
+                <Col>
+                 New User? &nbsp;
+                
+                 <Link to="/register">
+                    Register
+                </Link> 
+                </Col>
+                </Row>
             </Card>
         </div>
     )
