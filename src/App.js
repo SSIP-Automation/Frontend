@@ -1,11 +1,10 @@
 import React from "react"
 import {BrowserRouter as Router, Route,Switch } from "react-router-dom"
-import './bootstrap.min.css';
+import "./bootstrap.min (1).css"
+// import './bootstrap.min.css';
 import Header from "./Components/Header";
 import { Button, Container } from "react-bootstrap";
 import RegisterScreen from "./Screens/RegisterScreen";
-import {auth,provider} from  "./firebase";
-import { FirebaseAuthProvider } from "@react-firebase/auth";
 import LandingScreen from "./Screens/LandingScreen";
 function App() {
   
@@ -18,6 +17,7 @@ function App() {
         <Header></Header>
         <Container>
           <Route path="/Register"><RegisterScreen/></Route>
+          <Route path="/home">Aa Home Screen Che</Route>
        </Container>
         </main>
         

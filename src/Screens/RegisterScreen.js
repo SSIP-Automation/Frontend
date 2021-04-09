@@ -2,25 +2,24 @@ import React, { useEffect, useState } from 'react'
 import { Col, Form, Row, Button } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import db, { auth } from '../firebase'
-
+import jwt from "jsonwebtoken"
 function RegisterScreen() {
-    const [username, setusername] = useState("")
     const [email, setemail] = useState("")
-    const [password, setpassword] = useState("")
-    const [confirmpassword, setconfirmpassword] = useState("")
     const [branch, setbranch] = useState("")
+    const [cabin, setcabin] = useState("")
+    const [roomNo, setroomNo] = useState("")
     const userLogin = useSelector(state => state.userLogin)
     const {user}=userLogin
     useEffect(() => {
       console.log(auth.app);
       
       
-        
     }, [])
+    
     const signIn2=()=>{
+      const token=jwt.sign({email,roomNo,cabin},"abc123",{expiresIn:"1d"})
       var actionCodeSettings = {
-          
-          url: 'https://ssip-fad50.web.app',
+          url: `http://localhost:3000?token=${token}`,
           handleCodeInApp: true,
           
         };
@@ -37,12 +36,7 @@ function RegisterScreen() {
   }
     const SubmitHandler=(e)=>{
         e.preventDefault()
-        if(confirmpassword===password){
-            console.log("Yes",password,branch,username,email)
-        }
-        else{
-            console.log("no");
-        }
+        
     }
     return (
         <div>
@@ -51,22 +45,38 @@ function RegisterScreen() {
                 <Col sm={6}>
             <Form onSubmit={SubmitHandler} >
               <h1 >Register</h1>
-              <Form.Group controlId="User Name">
-                <Form.Label>Username</Form.Label>
-                <Form.Control required type="text" placeholder="Enter Username" onChange={(e)=>setusername(e.target.value)}></Form.Control>
-              </Form.Group>
+              
               <Form.Group controlId="Email">
                 <Form.Label>Email Address</Form.Label>
                 <Form.Control required type="email" placeholder="Enter Email" onChange={(e)=>setemail(e.target.value)}></Form.Control>
               </Form.Group>
-              <Form.Group controlId="Password">
-                <Form.Label>Password</Form.Label>
-                <Form.Control required type="password" placeholder="Enter Password" onChange={(e)=>setpassword(e.target.value)}></Form.Control>
-              </Form.Group>
-              <Form.Group controlId="Password">
-                <Form.Label>Confirm Password</Form.Label>
-                <Form.Control required type="password" placeholder="Re-enter Password" onChange={(e)=>setconfirmpassword(e.target.value)}></Form.Control>
-              </Form.Group>
+              <Form.Row>
+                  <Form.Group as={Col} controlId="CabinNo">
+                    <Form.Label>Cabin No.</Form.Label>
+                    <Form.Control required as="select" value={cabin} onChange={(e)=>setcabin(e.target.value)} >
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                    </Form.Control>
+                  </Form.Group>
+
+                  <Form.Group as={Col} controlId="RoomNo">
+                    <Form.Label>Room No</Form.Label>
+                    <Form.Control as="select" defaultValue="Choose..." required value={roomNo} onChange={(e)=>setroomNo(e.target.value)} >
+                      <option>Choose...</option>
+                      <option>E-105</option>
+                      <option>F-105</option>
+                      <option>G-105</option>
+                      <option>B-105</option>
+                      <option>C-105</option>
+                    </Form.Control>
+                  </Form.Group>
+
+                  
+              </Form.Row>
               <Form.Group controlId="Branch">
                 <Form.Label>Select Branch</Form.Label>
                 <Form.Control required as="select" value={branch} onChange={(e)=>setbranch(e.target.value)} >

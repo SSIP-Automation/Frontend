@@ -4,41 +4,52 @@ import { Button, Card, Col, Row, Spinner } from 'react-bootstrap'
 import { useDispatch,useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import db from "../firebase";
+import jwt from "jsonwebtoken"
 import logo from "./1.gif";
+import firebase from "firebase/app";
 function LandingScreen() {
     let history=useHistory()
+    const [token, settoken] = useState("")
+    const [email1, setemail1] = useState("")
+    const [data, setdata] = useState("")
     const [loading, setloading] = useState(false)
     const dispatch = useDispatch()
     const userLogin = useSelector(state => state.userLogin)
     const {user}=userLogin
     useEffect(() => {
         if(user){
-            history.push("/register")
+            history.push("/home")
         }
+        
         if (auth.isSignInWithEmailLink(window.location.href)) {
-           
-            var email = window.localStorage.getItem('emailForSignIn');
-            setloading(true)
-            if (!email) {
-              
-              email = window.prompt('Please provide your email for confirmation');
-            }
-            auth.signInWithEmailLink(email, window.location.href)
-              .then((result) => {
+            try {
+                settoken(history.location.search.split("=")[1].split("&")[0])
+                console.log(token)
+               
+                // console.log("yes",window.location.href)
+                setloading(true)
+            
+            auth.signInWithEmailLink(jwt.verify(token,"abc123").email, window.location.href)
+            .then((result) => {
                 console.log(result);
                 db.collection("users").doc(result.user.uid).set({
                     displayName:result.user.displayName
-                    })
+                })
                 window.localStorage.removeItem('emailForSignIn');
-                alert("User authenticated please Log in")
-                history.push("/register")
+                alert("User authenticated")
+                history.push("/home")
                 setloading(false)
                 
-              })
-              .catch((error) => {
-                
+            })
+            .catch((error) => {
+                alert("Sign in link expired register again")
                 console.log(error);
-              });
+            });
+            
+        } catch (error) {
+            console.log(error);
+            
+        }
           }
         
         auth.getRedirectResult().then(result=>
@@ -46,6 +57,7 @@ function LandingScreen() {
                 let error=true
                 if(result.user){
                     setloading(true)
+                    console.log(result);
                     db.collection("users").onSnapshot(snapshot=>{
                         snapshot.docs.map((doc)=>{
                             console.log(doc.id)
@@ -64,7 +76,7 @@ function LandingScreen() {
                 }
             }
         )       
-    }, [history,auth])
+    }, [history,auth,token])
     const signIn = () => {
         auth.signInWithPopup(provider)
         .then((result)=>{
@@ -76,11 +88,15 @@ function LandingScreen() {
       }
     const signIn1=()=>{
         setloading(true)
-        auth.signInWithRedirect(provider)
-        .then((result)=>{
-            console.log(result)
-            dispatch({type:"USER_LOGIN_SUCCESS",payload:result.user})
-         })
+        // auth.signInWithRedirect(provider)
+        // .then((result)=>{
+        //     console.log(result)
+        //     dispatch({type:"USER_LOGIN_SUCCESS",payload:result.user})
+        //  })
+        var provider = new firebase.auth.OAuthProvider('google.com');
+        provider.addScope('profile');
+        provider.addScope('email');
+        auth.signInWithRedirect(provider);
 
     }
     
@@ -116,3 +132,6 @@ export default LandingScreen
 
 
 // relate ate six 
+
+
+//http://localhost:3000/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNoYWtpcmh1emFpZmE0MkBnbWFpbC5jb20iLCJyb29tTm8iOiJFLTEwNSIsImNhYmluIjoiMyIsImlhdCI6MTYxNzk3MTc2NywiZXhwIjoxNjE4MDU4MTY3fQ.b977nETn9LTUiwLx2rKVjZUlsUuk3iSuk0y7dhzD1yw&apiKey=AIzaSyDPaXupfaFnuQwoZRf2-LVYczJqFFjBCdI&oobCode=LG5p_ukTTFvmvedl2a3EXQNj9JIHxhkicagOW-DF8cQAAAF4tqHvYA&mode=signIn&lang=en
