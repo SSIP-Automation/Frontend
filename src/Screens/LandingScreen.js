@@ -2,16 +2,17 @@ import React, { useEffect, useState } from 'react'
 import {auth,provider} from  "../firebase";
 import { Button, Card, Col, Row, Spinner } from 'react-bootstrap'
 import { useDispatch,useSelector } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import db from "../firebase";
 import jwt from "jsonwebtoken"
 import logo from "./1.gif";
 import firebase from "firebase/app";
+import { UserLoginAction } from '../actions/UserAction';
 function LandingScreen() {
     let history=useHistory()
+    let location=useLocation()
     const [token, settoken] = useState("")
     const [email1, setemail1] = useState("")
-    const [data, setdata] = useState("")
     const [loading, setloading] = useState(false)
     const dispatch = useDispatch()
     const userLogin = useSelector(state => state.userLogin)
@@ -20,26 +21,25 @@ function LandingScreen() {
         if(user){
             history.push("/home")
         }
-        
         if (auth.isSignInWithEmailLink(window.location.href)) {
+            settoken(window.location.search.split("=")[1].split("&")[0])
             try {
-                settoken(history.location.search.split("=")[1].split("&")[0])
                 console.log(token)
-               
+                const data=jwt.verify(token,"abc123")
                 // console.log("yes",window.location.href)
                 setloading(true)
             
-            auth.signInWithEmailLink(jwt.verify(token,"abc123").email, window.location.href)
+            auth.signInWithEmailLink(data.email, window.location.href)
             .then((result) => {
                 console.log(result);
                 db.collection("users").doc(result.user.uid).set({
-                    displayName:result.user.displayName
+                    displayName:result.user.displayName,
+                    CabinNo:data.cabin,
+                    RoomNo:data.roomNo
                 })
-                window.localStorage.removeItem('emailForSignIn');
-                alert("User authenticated")
+                alert("User registered")
                 history.push("/home")
                 setloading(false)
-                
             })
             .catch((error) => {
                 alert("Sign in link expired register again")
@@ -62,10 +62,14 @@ function LandingScreen() {
                         snapshot.docs.map((doc)=>{
                             console.log(doc.id)
                             if(doc.id===result?.user?.uid){
-                                dispatch({type:"USER_LOGIN_SUCCESS",payload:result.user})
-                                // localStorage.setItem("userLoginInfo",JSON.stringify(result.user))
+                                dispatch({
+                                    type:"USER_LOGIN_SUCCESS",
+                                    payload:result.user
+                                })
+                                // window.sessionStorage.setItem("userLoginInfo",JSON.stringify(result.user))
+                                localStorage.setItem("userLoginInfo",JSON.stringify(result.user))
                                 error = false
-                                history.push("/register")
+                                history.push("/home")
                             }
                         })
                         if (error) {
@@ -76,27 +80,16 @@ function LandingScreen() {
                 }
             }
         )       
-    }, [history,auth,token])
-    const signIn = () => {
-        auth.signInWithPopup(provider)
-        .then((result)=>{
-           console.log(result)
-        })
-        .catch((error)=>{
-            alert(error.message)
-        })
-      }
+    }, [history,token])
+   
     const signIn1=()=>{
         setloading(true)
-        // auth.signInWithRedirect(provider)
-        // .then((result)=>{
-        //     console.log(result)
-        //     dispatch({type:"USER_LOGIN_SUCCESS",payload:result.user})
-        //  })
-        var provider = new firebase.auth.OAuthProvider('google.com');
-        provider.addScope('profile');
-        provider.addScope('email');
-        auth.signInWithRedirect(provider);
+        auth.signInWithRedirect(provider)
+        .then((result)=>{
+            console.log(result)
+            dispatch({type:"USER_LOGIN_SUCCESS",payload:result.user})
+         })
+        
 
     }
     
@@ -107,8 +100,7 @@ function LandingScreen() {
                 <Card.Img className="mb-4" style={{height:"125px",objectFit:"contain"}} src={logo}/>
                 <h3>Sign in to SSIP Automation</h3>
                 <p>Hello Friends Welcome to my Youtube Channel</p>
-                <Button onClick={signIn} disabled={loading} variant="success" className="mx-auto mb-2">Sign in with Pop Up Google</Button>
-                <Button onClick={signIn1} disabled={loading} variant="success" className="mx-auto mb-2">Sign in with Redirect Google</Button>
+                <Button onClick={signIn1} disabled={loading} variant="success" className="mx-auto mb-2">Sign in with Google</Button>
                 {/* {error && error} */}
                 {loading && <Spinner className="mx-auto text-primary"  animation="border" role="status">
                 <span className="sr-only">Loading...</span>
@@ -118,7 +110,7 @@ function LandingScreen() {
                 <Col>
                  New User? &nbsp;
                 
-                 <Link to="/register">
+                 <Link to="/register" className="text-primary">
                     Register
                 </Link> 
                 </Col>

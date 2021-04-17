@@ -16,17 +16,16 @@ function RegisterScreen() {
       
     }, [])
     
-    const signIn2=()=>{
+    const SubmitHandler=()=>{
       const token=jwt.sign({email,roomNo,cabin},"abc123",{expiresIn:"1d"})
       var actionCodeSettings = {
-          url: `http://localhost:3000?token=${token}`,
+          url: `https://ssip-fad50.web.app?token=${token}`,
           handleCodeInApp: true,
           
         };
         auth.sendSignInLinkToEmail(email, actionCodeSettings)
           .then((response) => {
             
-              window.localStorage.setItem('emailForSignIn', email);
               console.log(response,"yes");
           })
           .catch((error) => {
@@ -34,10 +33,7 @@ function RegisterScreen() {
               
           });
   }
-    const SubmitHandler=(e)=>{
-        e.preventDefault()
-        
-    }
+    
     return (
         <div>
           {/* {user.uid} */}
@@ -54,6 +50,7 @@ function RegisterScreen() {
                   <Form.Group as={Col} controlId="CabinNo">
                     <Form.Label>Cabin No.</Form.Label>
                     <Form.Control required as="select" value={cabin} onChange={(e)=>setcabin(e.target.value)} >
+                      <option value="">Choose...</option>
                       <option value="1">1</option>
                       <option value="2">2</option>
                       <option value="3">3</option>
@@ -66,7 +63,7 @@ function RegisterScreen() {
                   <Form.Group as={Col} controlId="RoomNo">
                     <Form.Label>Room No</Form.Label>
                     <Form.Control as="select" defaultValue="Choose..." required value={roomNo} onChange={(e)=>setroomNo(e.target.value)} >
-                      <option>Choose...</option>
+                      <option value="">Choose...</option>
                       <option>E-105</option>
                       <option>F-105</option>
                       <option>G-105</option>
@@ -91,7 +88,7 @@ function RegisterScreen() {
               </Form.Group>
               <Row className="justify-content-center mt-3">
 
-                  <Button type="submit" onClick={signIn2} className="mx-auto mt-3">Sign in with Email link </Button>
+                  <Button type="submit"  className="mx-auto mt-3">Sign in with Email link </Button>
                 
                 
               </Row>
