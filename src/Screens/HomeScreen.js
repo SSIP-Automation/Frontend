@@ -1,25 +1,22 @@
 import { Card, Switch } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import { Col, Form, Image, ListGroup, Row } from 'react-bootstrap'
-import db from '../firebase'
+import { useSelector } from 'react-redux'
+import db, { auth } from '../firebase'
 
 function HomeScreen() {
     const [data, setdata] = useState("")
     const [fan125, setfan125] = useState(true)
+    const userDetails = useSelector(state => state.userDetails)
+    const {CabinNo,RoomNo}=userDetails
+    console.log(CabinNo,RoomNo);
     useEffect(() => {
-        // db.collection("users").doc("Tof0LfqPPqTLoNMu0kvociWaAnF3").onSnapshot(snapshot=>{
-        //      snapshot.data().refer.onSnapshot(snapshot=>{
-        //         setdata(snapshot.data())
-        //         console.log(snapshot.data())
-        //     })
-            
-        // })
-        db.collection("rooms").doc("E-105").collection("Cabin").doc("1").collection("Appliances").onSnapshot(snapshot=>{
+        db.collection("rooms").doc(RoomNo).collection("Cabin").doc(CabinNo).collection("Appliances").onSnapshot(snapshot=>{
             setdata(snapshot.docs)
+            console.log(data.docs)
         })
-        console.log(data.docs)
        
-    }, [fan125])
+    }, [fan125,CabinNo,RoomNo])
     return (
         <div>
             Home Screen 
@@ -42,7 +39,7 @@ function HomeScreen() {
                                                 <Col>
                                                 <Switch
                                                         checked={deta.data().power}
-                                                        onChange={()=>{db.collection("rooms").doc("E-105").collection("Cabin").doc("1").collection("Appliances").doc(deta.id).update({
+                                                        onChange={()=>{db.collection("rooms").doc(RoomNo).collection("Cabin").doc(CabinNo).collection("Appliances").doc(deta.id).update({
                                                             power:!deta.data().power
                                                         })
                                                         

@@ -10,3 +10,15 @@ export const UserLoginReducer =(state={user:null},action)=>{
            return {...state}
     }
 }
+export const UserDetailsReducer=(state={},action)=>{
+    switch (action.type) {
+        case "USER_DETAILS_REQUEST":
+            return{loading:true,user:null}
+        case "USER_DETAILS_SUCCESS":
+            return{loading:false,CabinNo:action.payload.CabinNo,RoomNo:action.payload.RoomNo}
+        case "USER_DETAILS_FAILED":
+            return{loading:false,error:"Bhai error aavyo che"}
+        default:
+           return {...state}
+    }
+}

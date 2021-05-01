@@ -15,12 +15,7 @@ function LandingScreen() {
     const [email1, setemail1] = useState("")
     const [loading, setloading] = useState(false)
     const dispatch = useDispatch()
-    const userLogin = useSelector(state => state.userLogin)
-    const {user}=userLogin
     useEffect(() => {
-        if(user){
-            history.push("/home")
-        }
         if (auth.isSignInWithEmailLink(window.location.href)) {
             settoken(window.location.search.split("=")[1].split("&")[0])
             try {
@@ -57,7 +52,6 @@ function LandingScreen() {
                 let error=true
                 if(result.user){
                     setloading(true)
-                    console.log(result);
                     db.collection("users").onSnapshot(snapshot=>{
                         snapshot.docs.map((doc)=>{
                             console.log(doc.id)
@@ -66,7 +60,6 @@ function LandingScreen() {
                                     type:"USER_LOGIN_SUCCESS",
                                     payload:result.user
                                 })
-                                // window.sessionStorage.setItem("userLoginInfo",JSON.stringify(result.user))
                                 localStorage.setItem("userLoginInfo",JSON.stringify(result.user))
                                 error = false
                                 history.push("/home")
@@ -93,7 +86,6 @@ function LandingScreen() {
 
     }
     
-   
     return (
         <div className="col d-flex justify-content-center vh-100 svbg ">
             <Card className="text-center p-5 rounded shadow m-auto bg-light">
