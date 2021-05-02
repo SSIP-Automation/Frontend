@@ -10,24 +10,29 @@ import HomeScreen from "./Screens/HomeScreen";
 import TestScreen from "./Screens/TestScreen";
 import { useDispatch, useSelector } from "react-redux";
 import db, { auth } from "./firebase";
+import ProfileScreen from "./Screens/ProfileScreen";
 function App() {
   const userLogin = useSelector(state => state.userLogin)
   const {user}=userLogin
   const dispatch = useDispatch()
   useEffect(() => {
     auth.onAuthStateChanged(()=>{
+      console.log(auth.currentUser)
       dispatch({
         type:"USER_LOGIN_SUCCESS",
         payload:auth.currentUser
     })
-    db.collection("users").doc(auth.currentUser.uid).onSnapshot(snapshot=>{
-      
+    if(auth.currentUser){
+
+      db.collection("users").doc(auth.currentUser.uid).onSnapshot(snapshot=>{
+        
         dispatch({
           type:"USER_DETAILS_SUCCESS",
           payload:snapshot.data()
         })
       })
       
+    }
     
     })
   }, [])
@@ -45,9 +50,17 @@ function App() {
         <Header ></Header>
         <Container>
           <Route path="/Register"><RegisterScreen/></Route>
+          <Route path="/home">
           {!user ? <Redirect to="/"/>:
-          <Route path="/home"><HomeScreen/></Route>
+            <HomeScreen/>
           }
+            </Route>
+            {/* <Route path="/profile">
+            {!user ? <Redirect to="/"/>:
+            <ProfileScreen/>
+          }
+            </Route> */}
+          
           {/* <Route path="/test" component={TestScreen} /> */}
        </Container>
         </main>

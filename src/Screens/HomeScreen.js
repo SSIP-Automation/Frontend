@@ -13,13 +13,13 @@ function HomeScreen() {
     useEffect(() => {
         db.collection("rooms").doc(RoomNo).collection("Cabin").doc(CabinNo).collection("Appliances").onSnapshot(snapshot=>{
             setdata(snapshot.docs)
-            console.log(data.docs)
+            console.log(data)
         })
        
     }, [fan125,CabinNo,RoomNo])
     return (
         <div>
-            Home Screen 
+            <h3 >Home Screen</h3>
             
                     <Row>
                         <Col md={6}>

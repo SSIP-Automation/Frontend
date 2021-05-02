@@ -1,9 +1,21 @@
 import React from 'react'
 import { Navbar,Nav,NavDropdown, Container } from "react-bootstrap";
+import { useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Link } from 'react-router-dom';
+import { auth } from '../firebase';
 
 function Header() {
+  const userLogin = useSelector(state => state.userLogin)
+  const {user}=userLogin
+  const logout=()=>{
+    auth.signOut().then(() => {
+      localStorage.removeItem("userLoginInfo")
+    }).catch((error) => {
+      // An error happened.
+    });
+    
+  }
     return (
         
             <Navbar bg="dark" expand="lg" variant="dark" collapseOnSelect >
@@ -19,14 +31,19 @@ function Header() {
     <LinkContainer to="/register">
       <Nav.Link >Register</Nav.Link>
       </LinkContainer>
-      <Nav.Link >Link</Nav.Link>
-      <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-        <NavDropdown.Item href="#action/3.1" className="text-center">Action</NavDropdown.Item>
-        <NavDropdown.Item href="#action/3.2"  className="text-center">Another action</NavDropdown.Item>
-        <NavDropdown.Item href="#action/3.3"  className="text-center">Something</NavDropdown.Item>
+      <Nav.Link >About Us</Nav.Link>
+      {user &&
+      <NavDropdown title={user.displayName} id="basic-nav-dropdown">
+         <LinkContainer to="/profile">
+          <NavDropdown.Item className="text-center">   
+        Profile
+          </NavDropdown.Item>
+      </LinkContainer>
+        <NavDropdown.Item onClick={()=>logout()} className="text-center">Logout</NavDropdown.Item>
         <NavDropdown.Divider />
-        <NavDropdown.Item href="#action/3.4"  className="text-center">Separated link</NavDropdown.Item>
+        <NavDropdown.Item   className="text-center">Separated link</NavDropdown.Item>
       </NavDropdown>
+      }
     </Nav>
   </Navbar.Collapse>
         </Container>
