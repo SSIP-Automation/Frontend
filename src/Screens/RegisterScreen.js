@@ -1,25 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, {useState } from 'react'
 import { Col, Form, Row, Button } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
-import db, { auth } from '../firebase'
+import  { auth } from '../firebase'
 import jwt from "jsonwebtoken"
 function RegisterScreen() {
     const [email, setemail] = useState("")
     const [branch, setbranch] = useState("")
     const [cabin, setcabin] = useState("")
     const [roomNo, setroomNo] = useState("")
-    const userLogin = useSelector(state => state.userLogin)
-    const {user}=userLogin
-    useEffect(() => {
-      // console.log(auth.app);
-      
-      
-    }, [])
     
     const SubmitHandler=()=>{
       const token=jwt.sign({email,roomNo,cabin},"abc123",{expiresIn:"1d"})
       var actionCodeSettings = {
-          url: `https://ssip-fad50.web.app?token=${token}`,
+          url: `http://localhost:3000?token=${token}`,
           handleCodeInApp: true,
           
         };
@@ -36,7 +28,6 @@ function RegisterScreen() {
     
     return (
         <div>
-          {/* {user.uid} */}
             <Row className="justify-content-md-center mt-3">
                 <Col sm={6}>
             <Form onSubmit={SubmitHandler} >

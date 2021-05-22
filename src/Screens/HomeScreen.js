@@ -1,25 +1,23 @@
-import { Card, Switch } from '@material-ui/core'
+import {  Switch } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
-import { Col, Form, Image, ListGroup, Row } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
-import db, { auth } from '../firebase'
+import { Col, Image, ListGroup, Row } from 'react-bootstrap'
+import { useAuth } from '../AuthContext'
+import db from '../firebase'
 
 function HomeScreen() {
     const [data, setdata] = useState("")
-    const [fan125, setfan125] = useState(true)
-    const userDetails = useSelector(state => state.userDetails)
-    const {CabinNo,RoomNo}=userDetails
-    console.log(CabinNo,RoomNo);
+    const {cabinNo,roomNo}=useAuth()
+    console.log(cabinNo,roomNo);
     useEffect(() => {
-        db.collection("rooms").doc(RoomNo).collection("Cabin").doc(CabinNo).collection("Appliances").onSnapshot(snapshot=>{
+        db.collection("rooms").doc(roomNo).collection("Cabin").doc(cabinNo).collection("Appliances").onSnapshot(snapshot=>{
             setdata(snapshot.docs)
-            console.log(data)
         })
        
-    }, [fan125,CabinNo,RoomNo])
+    }, [cabinNo,roomNo])
     return (
         <div>
             <h3 >Home Screen</h3>
+        <div className="d-none d-sm-block">Hello frands </div>
             
                     <Row>
                         <Col md={6}>
@@ -39,7 +37,7 @@ function HomeScreen() {
                                                 <Col>
                                                 <Switch
                                                         checked={deta.data().power}
-                                                        onChange={()=>{db.collection("rooms").doc(RoomNo).collection("Cabin").doc(CabinNo).collection("Appliances").doc(deta.id).update({
+                                                        onChange={()=>{db.collection("rooms").doc(roomNo).collection("Cabin").doc(cabinNo).collection("Appliances").doc(deta.id).update({
                                                             power:!deta.data().power
                                                         })
                                                         

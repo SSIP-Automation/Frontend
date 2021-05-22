@@ -1,21 +1,11 @@
 import React from 'react'
 import { Navbar,Nav,NavDropdown, Container } from "react-bootstrap";
-import { useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Link } from 'react-router-dom';
-import { auth } from '../firebase';
+import { useAuth } from '../AuthContext';
 
 function Header() {
-  const userLogin = useSelector(state => state.userLogin)
-  const {user}=userLogin
-  const logout=()=>{
-    auth.signOut().then(() => {
-      localStorage.removeItem("userLoginInfo")
-    }).catch((error) => {
-      // An error happened.
-    });
-    
-  }
+  const {currentUser:user,logout}=useAuth()
+  
     return (
         
             <Navbar bg="dark" expand="lg" variant="dark" collapseOnSelect >

@@ -1,7 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
-var firebaseui = require('firebaseui');
 const firebaseConfig = {
    apiKey: "AIzaSyDPaXupfaFnuQwoZRf2-LVYczJqFFjBCdI",
   authDomain: "ssip-fad50.firebaseapp.com",
@@ -15,5 +14,4 @@ const firebaseConfig = {
   const db = firebaseApp.firestore();
   export const auth = firebase.auth();
   export const provider = new firebase.auth.GoogleAuthProvider()
-  export const ui = new firebaseui.auth.AuthUI(firebase.auth());
 export default db
