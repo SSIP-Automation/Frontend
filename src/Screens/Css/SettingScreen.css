@@ -1,0 +1,16 @@
+.setting {
+    flex:0.85;
+    border: 1px solid white;
+}
+
+.setting__notification {
+    padding-bottom: 10px;
+}
+
+.list__text {
+    padding-top: 5px;
+}
+
+.list__switch {
+    text-align: end;
+}

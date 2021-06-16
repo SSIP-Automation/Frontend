@@ -1,0 +1,13 @@
+ 
+  @media (min-width: 576px) {
+    .homescreen {
+      flex:0.85;
+      border: 1px solid white;
+    }
+  }
+  @media (max-width: 576px) {
+    .homescreen {
+      flex:1;
+      border: 1px solid white;
+    }
+  }

@@ -1,0 +1,31 @@
+.sidebar__uname {
+    margin-top: 20px;
+    color: whitesmoke;
+
+}
+
+.sidebar__uname > h5 {
+    margin-bottom: 0rem;
+}
+
+.sidebar__icon {
+    margin: 0px 10px;
+}
+
+.sidebar__option {
+    display: flex;
+    cursor: pointer;
+    transition: 200ms color ease-in;
+    align-items: center;
+    margin-top: 30px;
+    /* margin-bottom: 20px; */
+}
+
+.sidebar__option > h5,h6 {
+    margin-bottom: 0rem;
+}
+
+.sidebar__option:hover {
+    color : white;
+}
+

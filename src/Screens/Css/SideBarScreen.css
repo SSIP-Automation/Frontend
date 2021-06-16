@@ -1,0 +1,28 @@
+.sidebar {
+    flex: 0.15;
+    height: 100vh;  
+    background-color: black;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 0px;
+    color: grey;
+    max-width: 230px auto;
+
+}
+
+.sidebar_header {
+    display : flex;
+    margin-left: 10px;
+}
+.sidebar_image {
+    margin:10px; 
+    margin-left: 0px;
+}
+
+.sidebar > hr {
+    border: 0.3px solid #282828;
+    width: 90%;
+    margin-top: 0px auto;
+    margin-bottom: 0px;
+}
+

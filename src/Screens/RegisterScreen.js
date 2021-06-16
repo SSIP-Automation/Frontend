@@ -11,7 +11,7 @@ function RegisterScreen() {
     const SubmitHandler=()=>{
       const token=jwt.sign({email,roomNo,cabin},"abc123",{expiresIn:"1d"})
       var actionCodeSettings = {
-          url: `http://localhost:3000?token=${token}`,
+          url: `https://ssip-fad50.web.app?token=${token}`,
           handleCodeInApp: true,
           
         };
