@@ -9,7 +9,7 @@ function SettingScreen() {
     const [notification, setnotification] = useState(true)
 
     return (
-        <div className="setting">
+        <div className="screens setting">
             <Container>
                 <div className="mt-5 setting__notification">
                     <ListGroup>

@@ -27,8 +27,8 @@ function RegisterScreen() {
   }
     
     return (
-        <div>
-            <Row className="justify-content-md-center mt-3">
+        <div className="screens">
+            <Row className="justify-content-sm-center mt-3">
                 <Col sm={6}>
             <Form onSubmit={SubmitHandler} >
               <h1 >Register</h1>

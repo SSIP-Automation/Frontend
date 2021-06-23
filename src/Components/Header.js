@@ -8,7 +8,7 @@ function Header() {
   
     return (
         
-            <Navbar bg="dark" expand="lg" variant="dark" collapseOnSelect >
+            <Navbar bg="dark" expand="lg" variant="dark" collapseOnSelect className="p-1 position-fixed fixed-top">
                 <Container>
   <Navbar.Brand href="#home" >
     <img src="https://i.ytimg.com/vi/u6uFYAD5-IA/hqdefault.jpg" alt="" width="40"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import "./Css/SideBarScreen.css"
 import SideBarOption from "./SideBarOption"
 import HomeIcon from '@material-ui/icons/Home';
@@ -14,7 +14,7 @@ import { useAuth } from '../AuthContext';
 
 function SideBarScreen() {
     // const [currentUser, setCurrentUser] = useState()
-    const {CurrentUser:user,logout}=useAuth()
+    const {logout}=useAuth()
 
 
     return (
@@ -46,7 +46,9 @@ function SideBarScreen() {
                     <SideBarOption Icon={SettingsRoundedIcon} title="Setting"/>
                 </Link>
             </div>
-            <SideBarOption Icon={ExitToAppRoundedIcon} onClick={()=>logout()} title="Log Out" />
+            <div onClick={()=>logout()}>
+                <SideBarOption Icon={ExitToAppRoundedIcon}  title="Log Out" />
+            </div>
         </div>
     )
 }

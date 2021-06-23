@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './Css/HomeScreen.css'
-import {  Switch, Container, Card, FormGroup, FormControlLabel } from '@material-ui/core'
-import { Col, Image, ListGroup, Row, Carousel } from 'react-bootstrap'
+import {  Switch, Container, Card } from '@material-ui/core'
+import { Col, Image, Row, Carousel } from 'react-bootstrap'
 import { useAuth } from '../AuthContext'
 import db from '../firebase'
 import vectorimg from "./Images/vectorimg.png"
@@ -29,7 +29,7 @@ function HomeScreen() {
     const classes = useStyles();
 
     return (
-        <div className="homescreen yoyoyo yoyo">
+        <div className="homescreen">
 
             <Carousel>
                 <Carousel.Item>

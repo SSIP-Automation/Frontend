@@ -20,7 +20,7 @@ function ProfileScreen() {
         console.log(CabinNo)
     }, [])
     return (
-      <div className="profile">
+      <div className="screens profile">
         <Container>
           
         <Row className="mt-3">

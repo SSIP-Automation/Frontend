@@ -3,7 +3,7 @@ import '../Css/DashBoardScreen.css'
 
 function DashBoardScreen() {
     return (
-        <div className="dashboard">
+        <div className="screens dashboard">
             This is DashBoard Screen.
         </div>
     )

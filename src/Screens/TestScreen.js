@@ -19,7 +19,7 @@ function HomeScreen() {
         <div className="homescreen">
             <Container fluid>
             <h3 >Home Screen</h3>
-            <div className="d-none d-sm-block">Hello frands </div>
+            <div className="d-none d-sm-block">Hello frands ggere</div>
 
                     <Row>
                         <Col md={6}>
